@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Req } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { Profile } from 'src/profiles/entities/profile.entity';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -12,7 +12,7 @@ export class UsersController {
   constructor(private usersService: UsersService) {}
 
   @Post()
-  async createUser(@Body() createUserDto: CreateUserDto): Promise<User> {
+  createUser(@Body() createUserDto: CreateUserDto): User {
     return this.usersService.createUser(createUserDto);
   }
 
@@ -24,5 +24,13 @@ export class UsersController {
   @Get(':id/profile')
   getProfileByUserId(@Param('id') id: string): Profile {
     return this.usersService.getProfileByUserId(id);
+  }
+
+  @Put(':id')
+  updateUser(
+    @Param('id') id: string,
+    @Body() createUserDto: CreateUserDto,
+  ): User {
+    return this.usersService.updateUser(id, createUserDto);
   }
 }

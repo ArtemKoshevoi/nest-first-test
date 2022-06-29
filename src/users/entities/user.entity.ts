@@ -1,4 +1,3 @@
-import { ApiProperty } from '@nestjs/swagger';
 import { Profile } from 'src/profiles/entities/profile.entity';
 
 export enum UserStatus {

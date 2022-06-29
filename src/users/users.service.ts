@@ -27,8 +27,6 @@ export class UsersService {
 
     this.users.push(user);
 
-    console.log(111, user);
-
     return user;
   }
 
@@ -40,5 +38,16 @@ export class UsersService {
     const user = this.getUserById(id);
 
     return user.profile;
+  }
+
+  updateUser(id: string, createUserDto: CreateUserDto): User {
+    const { firstName, lastName } = createUserDto;
+    const user = this.getUserById(id);
+
+    //mutation
+    user.profile.firstName = firstName;
+    user.profile.lastName = lastName;
+
+    return user;
   }
 }
