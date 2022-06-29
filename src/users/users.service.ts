@@ -8,7 +8,7 @@ import { Profile } from 'src/profiles/entities/profile.entity';
 export class UsersService {
   private readonly users: User[] = [];
 
-  create(createUserDto: CreateUserDto): User {
+  createUser(createUserDto: CreateUserDto): User {
     const { firstName, lastName } = createUserDto;
     const profileId = uuid();
 
@@ -32,7 +32,13 @@ export class UsersService {
     return user;
   }
 
-  getUser(id: string): User {
+  getUserById(id: string): User {
     return this.users.find((user) => user.id === id);
+  }
+
+  getProfileByUserId(id: string): Profile {
+    const user = this.getUserById(id);
+
+    return user.profile;
   }
 }
