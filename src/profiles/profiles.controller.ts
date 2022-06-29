@@ -1,4 +1,14 @@
-import { Controller } from '@nestjs/common';
+import { Controller, Get, Param } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
+import { Profile } from './entities/profile.entity';
+import { ProfilesService } from './profiles.service';
+@ApiTags('profiles')
+@Controller('profile')
+export class ProfilesController {
+  constructor(private profilesService: ProfilesService) {}
 
-@Controller('profiles')
-export class ProfilesController {}
+  @Get(':id')
+  getProfileById(@Param('id') id: string): Profile {
+    return this.profilesService.getProfileById(id);
+  }
+}
