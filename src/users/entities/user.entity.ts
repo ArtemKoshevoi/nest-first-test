@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Profile } from 'src/profiles/entities/profile.entity';
 
 export enum UserStatus {
   active = 'ACTIVE',
@@ -6,12 +7,8 @@ export enum UserStatus {
 }
 
 export class User {
-  @ApiProperty()
-  id: number;
-
-  @ApiProperty({ enum: ['ACTIVE', 'INACTIVE'] })
+  id: string;
   status: UserStatus = UserStatus.active;
-
-  @ApiProperty()
-  profileId: number;
+  profileId: string;
+  profile: Profile;
 }

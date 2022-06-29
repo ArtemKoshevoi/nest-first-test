@@ -1,13 +1,11 @@
-import { IsInt } from 'class-validator';
-import { UserStatus } from '../entities/user.entity';
+import { IsString, MaxLength } from 'class-validator';
 
 export class CreateUserDto {
-  @IsInt()
-  readonly id: number;
+  @IsString()
+  @MaxLength(10)
+  firstName: string;
 
-  // @IsInt()
-  readonly status: UserStatus;
-
-  @IsInt()
-  readonly profileId: number;
+  @IsString()
+  @MaxLength(10)
+  lastName: string;
 }
