@@ -1,4 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User, UserStatus } from './entities/user.entity';
 import { v4 as uuid } from 'uuid';
@@ -36,7 +40,13 @@ export class UsersService {
   }
 
   getUserById(id: string): User {
-    return this.users.find((user) => user.id === id);
+    const task = this.users.find((user) => user.id === id);
+
+    if (!task) {
+      throw new NotFoundException(`User with ID ${id} not found`);
+    }
+
+    return task;
   }
 
   getProfileByUserId(id: string): Profile {
@@ -54,6 +64,14 @@ export class UsersService {
 
     if (lastName) {
       user.profile.lastName = lastName;
+    }
+
+    if (
+      status &&
+      status === UserStatus.active &&
+      user.status === UserStatus.inactive
+    ) {
+      throw new ForbiddenException("You can't set current status to ACTIVE");
     }
 
     if (status) {

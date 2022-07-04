@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Profile } from './entities/profile.entity';
 
 @Injectable()
@@ -10,7 +10,13 @@ export class ProfilesService {
   }
 
   getProfileById(id: string) {
-    return this.profiles.find((profile) => profile.id === id);
+    const profile = this.profiles.find((profile) => profile.id === id);
+
+    if (!profile) {
+      throw new NotFoundException(`Profile with ID ${id} not found`);
+    }
+
+    return profile;
   }
 
   updateProfile(newProfile: Profile) {
