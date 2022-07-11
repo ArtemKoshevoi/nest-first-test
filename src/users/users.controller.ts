@@ -17,21 +17,21 @@ export class UsersController {
     return this.usersService.createUser(createUserDto);
   }
 
-  // @Get(':id')
-  // getUserById(@Param('id') id: string): User {
-  //   return this.usersService.getUserById(id);
-  // }
+  @Get(':id')
+  getUserById(@Param('id') id: number): Promise<User> {
+    return this.usersService.getUserById(id);
+  }
 
-  // @Get(':id/profile')
-  // getProfileByUserId(@Param('id') id: string): Profile {
-  //   return this.usersService.getProfileByUserId(id);
-  // }
+  @Get(':id/profile')
+  getProfileByUserId(@Param('id') id: number): Promise<Profile> {
+    return this.usersService.getProfileByUserId(id);
+  }
 
-  // @Put(':id')
-  // updateUser(
-  //   @Param('id') id: string,
-  //   @Body() updateUserDto: UpdateUserDto,
-  // ): User {
-  //   return this.usersService.updateUser(id, updateUserDto);
-  // }
+  @Put(':id')
+  updateUser(
+    @Param('id') id: number,
+    @Body() updateUserDto: UpdateUserDto,
+  ): Promise<User> {
+    return this.usersService.updateUser(id, updateUserDto);
+  }
 }

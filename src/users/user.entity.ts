@@ -25,6 +25,9 @@ export class User extends BaseEntity {
   })
   status: UserStatus;
 
+  @Column({ nullable: true })
+  profileId: number;
+
   @OneToOne(() => Profile, (profile) => profile.user)
   @JoinColumn()
   profile: Profile;

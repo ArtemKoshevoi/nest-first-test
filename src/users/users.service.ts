@@ -5,9 +5,7 @@ import {
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User, UserStatus } from './user.entity';
-import { v4 as uuid } from 'uuid';
 import { Profile } from 'src/profiles/profile.entity';
-import { ProfilesService } from 'src/profiles/profiles.service';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -17,6 +15,7 @@ export class UsersService {
   constructor(
     @InjectRepository(User)
     private userRepository: Repository<User>,
+    //TODO move to profile service
     @InjectRepository(Profile)
     private profileRepository: Repository<Profile>,
   ) {}
@@ -38,47 +37,56 @@ export class UsersService {
     return user;
   }
 
-  // getUserById(id: string): User {
-  //   const task = this.users.find((user) => user.id === id);
+  async getUserById(id: number): Promise<User> {
+    const user = this.userRepository
+      .createQueryBuilder('user')
+      .leftJoinAndSelect('user.profile', 'profile')
+      .where('user.id = :userId', { userId: id })
+      .getOne();
 
-  //   if (!task) {
-  //     throw new NotFoundException(`User with ID ${id} not found`);
-  //   }
+    if (!user) {
+      throw new NotFoundException(`User with ID ${id} not found`);
+    }
 
-  //   return task;
-  // }
+    return await user;
+  }
 
-  // getProfileByUserId(id: string): Profile {
-  //   const user = this.getUserById(id);
+  async getProfileByUserId(id: number): Promise<Profile> {
+    const user = await this.getUserById(id);
 
-  //   return user.profile;
-  // }
+    return user.profile;
+  }
 
-  // updateUser(id: string, updateUserDto: UpdateUserDto): User {
-  //   const { firstName, lastName, status } = updateUserDto;
-  //   const user = this.getUserById(id);
+  async updateUser(id: number, updateUserDto: UpdateUserDto): Promise<User> {
+    const { firstName, lastName, status } = updateUserDto;
+    const user = await this.getUserById(id);
 
-  //   //mutation
-  //   user.profile.firstName = firstName;
+    if (
+      status &&
+      status === UserStatus.active &&
+      user.status === UserStatus.inactive
+    ) {
+      throw new ForbiddenException("You can't set current status to ACTIVE");
+    }
 
-  //   if (lastName) {
-  //     user.profile.lastName = lastName;
-  //   }
+    if (status) {
+      user.status = status;
+    }
 
-  //   if (
-  //     status &&
-  //     status === UserStatus.active &&
-  //     user.status === UserStatus.inactive
-  //   ) {
-  //     throw new ForbiddenException("You can't set current status to ACTIVE");
-  //   }
+    const userProfile = user.profile;
 
-  //   if (status) {
-  //     user.status = status;
-  //   }
+    userProfile.firstName = firstName;
 
-  //   this.profilesService.updateProfile(user.profile);
+    if (lastName) {
+      userProfile.lastName = lastName;
+    }
 
-  //   return user;
-  // }
+    await this.profileRepository.save(userProfile);
+
+    user.profile = userProfile;
+
+    await this.userRepository.save(user);
+
+    return user;
+  }
 }

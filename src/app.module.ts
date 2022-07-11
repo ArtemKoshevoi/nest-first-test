@@ -20,7 +20,7 @@ import { Profile } from './profiles/profile.entity';
       password: 'postgres',
       database: 'users',
       entities: [User, Profile],
-      // autoLoadEntities: true,
+      autoLoadEntities: true,
       synchronize: true,
     }),
   ],
