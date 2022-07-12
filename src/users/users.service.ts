@@ -15,7 +15,6 @@ export class UsersService {
   constructor(
     @InjectRepository(User)
     private userRepository: Repository<User>,
-    //TODO move to profile service
     @InjectRepository(Profile)
     private profileRepository: Repository<Profile>,
   ) {}
@@ -48,7 +47,7 @@ export class UsersService {
       throw new NotFoundException(`User with ID ${id} not found`);
     }
 
-    return await user;
+    return user;
   }
 
   async getProfileByUserId(id: number): Promise<Profile> {

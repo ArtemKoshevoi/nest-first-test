@@ -1,5 +1,6 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Body, Controller, Get, Param, Put } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
+import { UpdateProfileDto } from './dto/update-profile.dto';
 import { Profile } from './profile.entity';
 import { ProfilesService } from './profiles.service';
 @ApiTags('profiles')
@@ -7,8 +8,16 @@ import { ProfilesService } from './profiles.service';
 export class ProfilesController {
   constructor(private profilesService: ProfilesService) {}
 
-  // @Get(':id')
-  // getProfileById(@Param('id') id: string): Profile {
-  //   return this.profilesService.getProfileById(id);
-  // }
+  @Get(':id')
+  getProfileById(@Param('id') id: number): Promise<Profile> {
+    return this.profilesService.getProfileById(id);
+  }
+
+  @Put(':id')
+  updateProfile(
+    @Param('id') id: number,
+    @Body() updateProfileDto: UpdateProfileDto,
+  ): Promise<Profile> {
+    return this.profilesService.updateProfile(id, updateProfileDto);
+  }
 }
