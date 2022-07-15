@@ -4,9 +4,34 @@
 
 type User {
   id: Int!
+  status: UserStatus!
   profileId: Int!
+  profile: Profile!
+}
+
+"""User status"""
+enum UserStatus {
+  active
+  inactive
+}
+
+type Profile {
+  id: Int!
+  firstName: String!
+  lastName: String
+  user: User!
 }
 
 type Query {
+  getUser(id: Int!): User!
   users: [User!]!
+}
+
+type Mutation {
+  createUser(createUserInput: CreateUserInput!): User!
+}
+
+input CreateUserInput {
+  firstName: String!
+  lastName: String
 }
