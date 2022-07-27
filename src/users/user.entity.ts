@@ -7,6 +7,7 @@ import {
   JoinColumn,
   OneToOne,
   PrimaryGeneratedColumn,
+  RelationId,
 } from 'typeorm';
 
 @Entity()
@@ -24,11 +25,12 @@ export class User {
   status: UserStatus;
 
   @Field(() => Int)
+  @RelationId((user: User) => user.profile)
   @Column({ nullable: true })
   profileId: number;
 
   @Field(() => Profile)
-  @OneToOne(() => Profile, (profile) => profile.user)
+  @OneToOne(() => Profile, (profile) => profile.user, { cascade: true })
   @JoinColumn()
   profile: Profile;
 }

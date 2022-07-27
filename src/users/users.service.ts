@@ -5,6 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Profile } from 'src/profiles/profile.entity';
 import { Repository } from 'typeorm';
 import { CreateUserInput } from './dto/create-user.input';
+import { UpdateUserInput } from './dto/update-user.input';
 
 @Injectable()
 export class UsersService {
@@ -15,8 +16,8 @@ export class UsersService {
     private profileRepository: Repository<Profile>,
   ) {}
 
-  createUser(createUserInput: CreateUserInput): Promise<User> {
-    const { firstName, lastName } = createUserInput;
+  createUser(input: CreateUserInput): Promise<User> {
+    const { firstName, lastName } = input;
 
     const profile = this.profileRepository.create({
       firstName,
@@ -43,5 +44,19 @@ export class UsersService {
 
   async findAll(): Promise<User[]> {
     return this.userRepository.find();
+  }
+
+  async updateUser(updateUserInput: UpdateUserInput): Promise<User> {
+    const { id } = updateUserInput;
+
+    const user = await this.findOne(id);
+    const updatedUser = await this.userRepository.save(
+      this.userRepository.merge(
+        user,
+        this.userRepository.create(updateUserInput),
+      ),
+    );
+
+    return this.findOne(updatedUser.id);
   }
 }

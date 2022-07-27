@@ -24,14 +24,28 @@ type Profile {
 
 type Query {
   getUser(id: Int!): User!
-  users: [User!]!
+  getUsers: [User!]!
+  getUserProfileByUserId(id: Int!): Profile!
 }
 
 type Mutation {
   createUser(createUserInput: CreateUserInput!): User!
+  updateUser(input: UpdateUserInput!): User!
 }
 
 input CreateUserInput {
+  firstName: String!
+  lastName: String
+}
+
+input UpdateUserInput {
+  id: Int!
+  status: UserStatus!
+  profile: UpdateProfileInput!
+}
+
+input UpdateProfileInput {
+  id: Int!
   firstName: String!
   lastName: String
 }
